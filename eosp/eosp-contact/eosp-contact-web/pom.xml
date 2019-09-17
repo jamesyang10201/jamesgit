@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.wisesoft</groupId>
+		<artifactId>eosp-contact</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>eosp-contact-web</artifactId>
+	<packaging>war</packaging>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.source.version>1.7</java.source.version>
+		<java.target.version>1.7</java.target.version>
+		
+		<com.wisesoft.sys.groupId>com.wisesoft.sys</com.wisesoft.sys.groupId>
+		<com.wisesoft.sys.version>1.1.0-SNAPSHOT</com.wisesoft.sys.version>
+		<com.wisesoft.sys.user.groupId>com.wisesoft.sys.user</com.wisesoft.sys.user.groupId>
+		<com.wisesoft.sys.user.version>1.2.0-SNAPSHOT</com.wisesoft.sys.user.version>
+		<com.wisesoft.login.groupId>com.wisesoft.login</com.wisesoft.login.groupId>
+		<com.wisesoft.login.version>1.2.0-SNAPSHOT</com.wisesoft.login.version>
+		<com.wisesoft.sys.index.groupId>com.wisesoft.sys.index</com.wisesoft.sys.index.groupId>
+        <com.wisesoft.sys.index.version>1.0.0-SNAPSHOT</com.wisesoft.sys.index.version>
+		<!-- 使用dubbo调用(0.0.1-SNAPSHOT)版泵 -->
+		<com.wisesoft.dubbo.version>0.0.2-SNAPSHOT</com.wisesoft.dubbo.version>
+	</properties>
+
+	<build>
+		<directory>target</directory>
+        <finalName>eosp-contact-web</finalName>
+        
+        <!--排除不需要的配置文件-->
+		<!--<resources>-->
+			<!--<resource>-->
+				<!--<directory>src/main/resources</directory>-->
+				<!--<includes>-->
+					<!--<include>**/*.sql</include>-->
+				<!--</includes>-->
+				<!--<excludes>-->
+					<!--<exclude>**/*.xml</exclude>-->
+					<!--<exclude>**/*.properties</exclude>-->
+					<!--<exclude>**/*.json</exclude>-->
+				<!--</excludes>-->
+				<!--<filtering>true</filtering>-->
+			<!--</resource>-->
+		<!--</resources>-->
+        
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.1</version>
+				<configuration>
+					<source>${java.source.version}</source>
+					<target>${java.target.version}</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2.1</version>
+				<configuration>
+					<attach>true</attach>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>compile</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- war打包插件, 设定war包名称不带版本号 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.3</version>
+				<configuration>
+					<warName>eosp-contact-web</warName>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+	           <groupId>org.apache.maven.plugins</groupId>
+	           <artifactId>maven-deploy-plugin</artifactId>
+	           <version>2.8.2</version>
+	           <configuration>
+	               <skip>true</skip>
+	           </configuration>
+	       </plugin>
+		   
+		</plugins>
+	</build>
+
+	<dependencies>	
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>eosp-contact-model</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>eosp-contact-service-interface</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>eosp-contact-service</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		
+		<!-- wsbp-sys -->
+		<dependency>
+			<groupId>${com.wisesoft.sys.groupId}</groupId>
+			<artifactId>wsbp-sys-common</artifactId>
+			<version>${com.wisesoft.sys.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${com.wisesoft.sys.groupId}</groupId>
+			<artifactId>wsbp-sys-model</artifactId>
+			<version>${com.wisesoft.sys.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${com.wisesoft.sys.groupId}</groupId>
+			<artifactId>wsbp-sys-interface</artifactId>
+			<version>${com.wisesoft.sys.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${com.wisesoft.sys.groupId}</groupId>
+			<artifactId>wsbp-sys-service</artifactId>
+			<version>${com.wisesoft.sys.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${com.wisesoft.sys.groupId}</groupId>
+			<artifactId>wsbp-sys-components</artifactId>
+			<version>${com.wisesoft.sys.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${com.wisesoft.sys.groupId}</groupId>
+			<artifactId>wsbp-sys-session</artifactId>
+			<version>${com.wisesoft.sys.version}</version>
+		</dependency>
+		
+		<!-- wsbp-sys-user -->
+		<dependency>
+			<groupId>${com.wisesoft.sys.user.groupId}</groupId>
+			<artifactId>wsbp-sys-user-common</artifactId>
+			<version>${com.wisesoft.sys.user.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${com.wisesoft.sys.user.groupId}</groupId>
+			<artifactId>wsbp-sys-user-interface</artifactId>
+			<version>${com.wisesoft.sys.user.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${com.wisesoft.sys.user.groupId}</groupId>
+			<artifactId>wsbp-sys-user-service</artifactId>
+			<version>${com.wisesoft.sys.user.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${com.wisesoft.sys.user.groupId}</groupId>
+			<artifactId>wsbp-sys-user-components</artifactId>
+			<version>${com.wisesoft.sys.user.version}</version>
+		</dependency>
+		
+		
+		<!-- 单点登录 -->
+		<dependency>
+			<groupId>${com.wisesoft.login.groupId}</groupId>
+			<artifactId>wsbp-login-client</artifactId>
+			<version>${com.wisesoft.login.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${com.wisesoft.login.groupId}</groupId>
+			<artifactId>wsbp-login-server</artifactId>
+			<version>${com.wisesoft.login.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${com.wisesoft.login.groupId}</groupId>
+			<artifactId>wsbp-login-service-impl</artifactId>
+			<version>${com.wisesoft.login.version}</version>
+		</dependency>
+		<!-- index(new) -->
+		<dependency>
+			<groupId>${com.wisesoft.sys.index.groupId}</groupId>
+			<artifactId>wsbp-sys-index-web</artifactId>
+			<version>${com.wisesoft.sys.index.version}</version>
+		</dependency>
+		
+		<!-- dubbo -->
+		<dependency>
+			<groupId>dubbo-spring</groupId>
+			<artifactId>dubbo-spring</artifactId>
+			<version>${com.wisesoft.dubbo.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<version>3.18.0-GA</version>
+		</dependency>
+		
+	</dependencies>
+
+</project>
+

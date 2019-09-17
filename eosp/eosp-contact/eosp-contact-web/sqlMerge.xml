@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="maven-antrun-" default="main">
+	<target name="main">
+		<concat encoding="UTF-8" outputencoding="UTF-8" destfile="src/main/resources/sql/data/init.sql">
+			<fileset dir="src/main/resources/sql" includes="*.sql" />
+		</concat>
+	</target>
+</project>

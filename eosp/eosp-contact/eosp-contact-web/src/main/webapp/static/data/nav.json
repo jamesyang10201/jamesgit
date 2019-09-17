@@ -1,0 +1,35 @@
+[
+  {
+    "id": "menu1",
+    "text": "系统管理",
+    "icons": "&#xe644;",
+    "children":[
+	    {
+		    "id": "menu1-1",
+		    "text": "机构管理",
+		    "icons": "&#xe644;",
+		    "url": "wsbp-sys/wsbpSys/organization/index.html"
+	 	 },
+	 	 {
+		    "id": "menu1-2",
+		    "text": "部门管理",
+		    "icons": "&#xe644;",
+		    "url": "wsbp-sys/wsbpSys/department/index.html"
+		  }
+    ]
+  },
+  {
+    "id": "menu2",
+    "text": "模版生成器",
+    "icons": "&#xe642;",
+    "url": "/htmlfactory/",
+    "children":[]
+  },
+  {
+    "id": "menu3",
+    "text": "开发控件库",
+    "icons": "&#xe643;",
+    "url": "/wsbp/project/tsi/ui/",
+    "children":[]
+  }
+]

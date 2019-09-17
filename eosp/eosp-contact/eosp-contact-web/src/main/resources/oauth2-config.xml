@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<description>应用开发与配置平台单点认证客户端配置</description>
+	<sso>
+		<!-- 客户端id（在平台子系统浏览界面可以看到） -->
+		<clientId>4d2179c851494bdba4a53bff2d6748831</clientId>
+		<!-- 客户端安全key（在平台子系统浏览界面可以看到） -->
+		<clientSecret>9ceac5c08787488c8431e95b65263133</clientSecret>
+		<!-- 认证中心地址(当不配置该参数时系统将自动查找本地项目地址) -->
+		<!-- <authorURL>http://localhost:8080/framework-test</authorURL> -->
+		<!-- 认证方式，jwt或者oauth2 -->
+		<authType>oauth2</authType>
+		<!-- 会话过期时间 -->
+		<timeout>30</timeout>
+		<!-- cookies生命周期时间，如果不设置则默认为每次都登录 -->
+		<maxAge></maxAge>
+		<!-- 响应类型（常量，基本不变） -->
+		<responseType>code</responseType>
+		<!-- 授权类型 （常量，基本不变）-->
+		<grantType>authorization_code</grantType>
+	</sso>
+</root>

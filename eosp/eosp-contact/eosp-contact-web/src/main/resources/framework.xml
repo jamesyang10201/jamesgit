@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:tx="http://www.springframework.org/schema/tx" 
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+	   xmlns:task="http://www.springframework.org/schema/task"
+	   
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+						   http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+						   http://www.springframework.org/schema/tx
+						   http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+						   http://www.springframework.org/schema/aop 
+						   http://www.springframework.org/schema/aop/spring-aop-3.0.xsd 
+						   http://www.springframework.org/schema/context 
+						   http://www.springframework.org/schema/context/spring-context-3.0.xsd
+						   http://www.springframework.org/schema/task 
+						   http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+
+	<context:component-scan base-package="com.wisesoft"/>
+	<!-- 开启@AspectJ AOP代理 -->
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+
+    <!-- 任务调度器 -->
+    <task:scheduler id="scheduler" pool-size="10"/>
+
+    <!-- 任务执行器 -->
+    <task:executor id="executor" pool-size="10"/>
+
+    <!--开启注解调度支持 @Async @Scheduled-->
+    <task:annotation-driven executor="executor" scheduler="scheduler" proxy-target-class="true"/>
+	
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="104857600" />
+	</bean>
+
+	<bean id="log-filter" class="com.alibaba.druid.filter.logging.Log4jFilter">
+        <property name="statementExecutableSqlLogEnable" value="true" />
+  	</bean>
+
+
+
+	<bean id="wsbp_main_druidDataSource" class="com.wisesoft.store.db.jdbc.StoreXADataSource" init-method="init"
+		  destroy-method="close">
+		<!-- 基本属性 url、user、password -->
+		
+		<property name="url" value="jdbc:mysql://172.16.9.19/eosp?characterEncoding=utf-8" />
+		<property name="username" value="root" />
+		<property name="password" value="wisesoft" />
+
+		<!-- 配置初始化大小、最小、最大 -->
+		<property name="initialSize" value="1"/>
+		<property name="minIdle" value="1"/>
+		<property name="maxActive" value="100"/>
+
+		<!-- 配置获取连接等待超时的时间 -->
+		<property name="maxWait" value="60000"/>
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000"/>
+
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="300000"/>
+
+		<property name="validationQuery" value="select 1 from dual"/>
+		<property name="testWhileIdle" value="true"/>
+		<property name="testOnBorrow" value="false"/>
+		<property name="testOnReturn" value="false"/>
+
+		<property name="connectionProperties" value="druid.stat.mergeSql=true"/>
+		<property name="useGlobalDataSourceStat" value="true"/>
+		<!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
+		<property name="poolPreparedStatements" value="true"/>
+		<property name="maxPoolPreparedStatementPerConnectionSize" value="20"/>
+
+		<!-- 配置监控统计拦截的filters -->
+		<property name="filters" value="stat"/>
+		<property name="proxyFilters">
+			<list>
+				<ref bean="log-filter"/>
+			</list>
+		</property>
+
+	</bean>
+
+	<bean id="wsbp_main_dataSource" class="com.wisesoft.store.db.jdbc.StoreJATDataSource" init-method="init"
+		  destroy-method="close">
+		<property name="name" value="wsbp_main_dataSource"/>
+
+		<property name="xaDataSource" ref="wsbp_main_druidDataSource"/>
+
+		<property name="maxPoolSize" value="100"/>
+		<property name="borrowConnectionTimeout" value="60"/>
+		<property name="reapTimeout" value="20"/>
+		<property name="maxIdleTime" value="60"/>
+		<property name="maintenanceInterval" value="60"/>
+		<property name="loginTimeout" value="60"/>
+		<property name="logWriter" value="60"/>
+		<property name="testQuery" value="select 1 from dual"/>
+
+	</bean>
+
+	<bean id="wsbp_main_ModelManager" class="com.wisesoft.store.SimpleModelManager" init-method="init"
+		  destroy-method="destroy">
+		<property name="name" value="wsbp_main_ModelManager"/>
+		<property name="dataSource" ref="wsbp_main_dataSource"/>
+		<property name="loadTableModel" value="false"/>
+	</bean>
+	
+	<bean id="BusManager" class="com.wisesoft.bus.BusManager" depends-on="wsbp_main_ModelManager" init-method="init" destroy-method="destroy">
+		<property name="mainModelManagerName" value="wsbp_main_ModelManager" />
+		<property name="jtaTransactionManagerName" value="JtaTransactionManager" />
+	</bean>
+
+	<bean id="TransactionServiceFactory" class="com.wisesoft.store.db.jdbc.tran.TransactionServiceFactory" />
+
+	<bean id="userTransactionService" factory-bean="TransactionServiceFactory" factory-method="getUserTransactionServiceImp" init-method="init" destroy-method="shutdownForce" />
+ 
+    <bean id="atomikosTransactionManager" class="com.atomikos.icatch.jta.UserTransactionManager" init-method="init" destroy-method="close" depends-on="userTransactionService">
+        <property name="forceShutdown" value="false" />
+    </bean>
+ 
+    <bean id="atomikosUserTransaction" class="com.atomikos.icatch.jta.UserTransactionImp" depends-on="userTransactionService">
+        <property name="transactionTimeout" value="300" />
+    </bean>
+ 
+    <bean id="JtaTransactionManager" class="org.springframework.transaction.jta.JtaTransactionManager" depends-on="userTransactionService">
+        <property name="transactionManager" ref="atomikosTransactionManager" />
+        <property name="userTransaction" ref="atomikosUserTransaction" />
+    </bean>
+    
+    <!-- 不使用dubbo时配置 -->
+     <!--<import resource="dubbo.xml"/>-->
+	<bean class="com.wisesoft.dubbo.spring.DependencyBeanPostProcessor" />
+</beans>
